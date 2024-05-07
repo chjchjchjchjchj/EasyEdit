@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 
 import torch
-from datasets import load_dataset
+from datasets import load_dataset, load_from_disk
 from tqdm.auto import tqdm
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
@@ -93,7 +93,7 @@ def layer_stats(
     """
     Function to load or compute cached stats.
     """
-
+    
     def get_ds():
         # Load_From_File
         # from datasets import Dataset
@@ -101,8 +101,12 @@ def layer_stats(
         # raw_ds = {'train': raw_ds}
         raw_ds = load_dataset(
             ds_name,
-            dict(wikitext="wikitext-103-raw-v1", wikipedia="20200501.en")[ds_name]
+            dict(wikitext="wikitext-103-raw-v1", wikipedia="20200501.en")[ds_name] # 原来是20200501.en HJ
         )
+        # raw_ds = load_from_disk("/home/chengdong/haojun/EasyEdit/wikitext-103-raw-v1")
+        # raw_ds = load_dataset("wikitext") # ['wikitext-103-v1', 'wikitext-2-v1', 'wikitext-103-raw-v1', 'wikitext-2-raw-v1']
+        # raw_ds = load_dataset('wikitext', 'wikitext-103-v1')
+        # raw_ds = load_dataset('wikitext', 'wikitext-2-raw-v1')
         if hasattr(model.config, 'n_positions'):
             maxlen = model.config.n_positions
         elif hasattr(model.config, 'max_sequence_length'):
